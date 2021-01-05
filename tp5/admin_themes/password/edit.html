@@ -1,0 +1,57 @@
+{extend name="base" /}
+{block name="body"}
+<div class="layui-body">
+    <!--tab标签-->
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class=""><a href="{:url('admin/password/index')}">激活码管理</a></li>
+            <li class=""><a href="{:url('admin/password/add')}">添加激活码</a></li>
+            <li class="layui-this">编辑激活码</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <form class="layui-form form-container" action="{:url('admin/password/update')}" method="post">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">激活码</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="" value="{$password.code}" disabled placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">创建时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="" value="{$password.create_time}" disabled placeholder="" class="layui-input datetime">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">过期时间</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="pastdue_time" value="{$password.pastdue_time}" placeholder="" class="layui-input datetime">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">是否激活</label>
+                        <div class="layui-input-block">
+                            <input type="text" name="" value="{$password.user_status == 1 ? '已激活' : '未使用'}" disabled placeholder="" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">状态</label>
+                        <div class="layui-input-block">
+                            <input type="radio" name="status" value="1" title="启用" {if condition="$password.status==1"} checked="checked"{/if}>
+                            <input type="radio" name="status" value="0" title="禁用" {if condition="$password.status==0"} checked="checked"{/if}>
+                        </div>
+                    </div>
+                    <div class="layui-form-item">
+                        <div class="layui-input-block">
+                            <input type="hidden" name="id" value="{$password.id}">
+                            <button class="layui-btn" lay-submit lay-filter="*">更新</button>
+                            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}

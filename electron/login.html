@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>登录</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <!-- <script>
+    require('electron-connect').client.create()
+    </script> -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" type="text/css" href="login.css">
+    <script src="login.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <el-card class="box-card">
+            <h1 class="title">登 录</h1>
+            <div class="input">
+                <el-input placeholder="请输入用户名" clearable v-model="username">
+                    <template slot="prepend">名称:</template>
+                </el-input>
+            </div>
+            <div class="input">
+                <el-input placeholder="请输入密码" type="password" clearable v-model="password">
+                    <template slot="prepend">密码:</template>
+                </el-input>
+            </div>
+            <div class="input" v-show="isShowActivate">
+                <el-input placeholder="请输入激活码" v-model="code">
+                    <template slot="prepend">激活:</template>
+                </el-input>
+            </div>
+            <div class="buttom">
+                <el-button type="primary" :icon="activeIcon" @click="switchShowActivate">激 活</el-button>
+                <el-button type="primary" icon="el-icon-success" @click="login">登 录</el-button>
+            </div>
+        </el-card>
+    </div>
+</body>
+
+</html>

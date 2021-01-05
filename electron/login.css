@@ -1,0 +1,48 @@
+    * {
+        border: 0;
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        overflow-y: hidden;
+        height: 730px;
+        width: 100%
+    }
+
+    #app {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .text {
+        font-size: 14px;
+    }
+
+    .item {
+        padding: 18px 0;
+    }
+
+    .box-card {
+        width: 600px;
+        height: 400px;
+        margin-top: -50px;
+        text-align: center;
+        padding: 10px 30px;
+    }
+
+    .title {
+        margin-bottom: 50px;
+    }
+
+    .input {
+        margin-top: 10px;
+    }
+
+    .buttom {
+        margin-top: 30px;
+    }

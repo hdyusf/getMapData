@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>map</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!--     <script>
+    require('electron-connect').client.create()
+    </script> -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.3/TweenMax.min.js"></script>
+    <script src="index.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <el-container>
+            <el-header>
+                <div>
+                    <el-radio-group v-model="radio" @change='radioClick($event)'>
+                        <el-radio-button label="Baidu">百度地图</el-radio-button>
+                        <el-radio-button label="Gaode">高德地图</el-radio-button>
+                        <el-radio-button label="Tengxun">腾讯地图</el-radio-button>
+                        <el-radio-button label="Sougou">搜狗地图</el-radio-button>
+                        <el-tooltip class="item" effect="dark" content="必应地图无法设置地区" placement="bottom">
+                        <el-radio-button label="Biying">必应采集</el-radio-button>
+                        </el-tooltip>
+                        <el-radio-button label="Pi">360地图</el-radio-button>
+                    </el-radio-group>
+                </div>
+            </el-header>
+            <el-main>
+                <el-table :data="tableData" style="width: 100%" height="455" border>
+                    <el-table-column type="index" label="编号" width="50">
+                    </el-table-column>
+                    <el-table-column prop="source" label="来源" width="88">
+                    </el-table-column>
+                    <el-table-column prop="name" label="名称" width="145" show-overflow-tooltip>
+                    </el-table-column>
+                    <el-table-column prop="fixedPhone" label="固话" width="110">
+                    </el-table-column>
+                    <el-table-column prop="phone" label="手机" width="100">
+                    </el-table-column>
+                    <el-table-column prop="prov" label="省份" width="70">
+                    </el-table-column>
+                    <el-table-column prop="city" label="地市" width="70">
+                    </el-table-column>
+                    <el-table-column prop="area" label="区域" width="98">
+                    </el-table-column>
+                    <el-table-column prop="site" label="详细地址" show-overflow-tooltip>
+                    </el-table-column>
+                </el-table>
+            </el-main>
+            <el-footer>
+                <el-row>
+                    <el-col :span="12">
+                        <div class="grid-content bg-purple-light setting">
+                            <el-tabs v-model="activeTabName">
+                                <el-tab-pane label="采集设置" name="first">
+                                    <el-row>
+                                        <el-col :span="12">
+                                            <div class="query">
+                                                <div class="tagTop">采集关键词</div>
+                                                <div class="overflowy">
+                                                    <el-tag :key="tag" v-for="tag in dynamicTagsQuery" closable :disable-transitions="false" @close="handleCloseQuery(tag)">
+                                                        {{tag}}
+                                                    </el-tag>
+                                                    <el-input class="input-new-tag" v-if="inputVisibleQuery" v-model="inputValueQuery" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirmQuery" @blur="handleInputConfirmQuery">
+                                                    </el-input>
+                                                    <el-button v-else class="button-new-tag" size="small" @click="showInputQuery">+ 添加</el-button>
+                                                </div>
+                                            </div>
+                                        </el-col>
+                                        <el-col :span="12">
+                                            <div class="city">
+                                                <div class="tagTop">采集地市</div>
+                                                <div class="overflowy">
+                                                    <el-tag :key="tag" v-for="tag in dynamicTagsCity" closable :disable-transitions="false" @close="handleCloseCity(tag)">
+                                                        {{tag}}
+                                                    </el-tag>
+                                                    <el-input class="input-new-tag" v-if="inputVisibleCity" v-model="inputValueCity" ref="saveTagInput" size="small" @keyup.enter.native="handleInputConfirmCity" @blur="handleInputConfirmCity">
+                                                    </el-input>
+                                                    <el-button v-else class="button-new-tag" size="small" @click="showInputCity">+ 添加</el-button>
+                                                </div>
+                                            </div>
+                                        </el-col>
+                                    </el-row>
+                                </el-tab-pane>
+                                <el-tab-pane label="运行日志" name="second">
+                                    <div class="log">
+                                        <p v-for='item in logs'>{{item}}</p>
+                                    </div>
+                                </el-tab-pane>
+                            </el-tabs>
+                        </div>
+                    </el-col>
+                    <el-col :span="12">
+                        <div class="grid-content bg-purple-light setting">
+                            <el-row :gutter="20">
+                                <el-col :span="16">
+                                    <div class="grid-content bg-purple">
+                                        <el-tabs v-model="activeTabName2">
+                                            <el-tab-pane label="操作设置" name="setting">
+                                                <div class="settingList">
+                                                    <el-button type="primary" class="slb" @click="startGather" v-if="!getContinue">
+                                                        开始采集
+                                                    </el-button>
+                                                    <el-button type="primary" class="slb" @click="startGather" v-else>
+                                                        继续采集
+                                                    </el-button>
+                                                    <el-button type="warning" class="slb" @click="stopGather">停止采集</el-button>
+                                                    <el-button type="danger" class="slb" @click="clearGather">清空数据</el-button>
+                                                    <el-button type="primary" class="slb" @click="exportExcel">导出Excel</el-button>
+                                                    <el-button type="primary" class="slb" @click="exportTxt">导出txt</el-button>
+                                                </div>
+                                            </el-tab-pane>
+                                        </el-tabs>
+                                    </div>
+                                </el-col>
+                                <el-col :span="8" class="numBox">
+                                    <div class="grid-content bg-purple showNum">
+                                        <p>采集数量</p>
+                                        <h1>{{animateCount}}</h1>
+                                    </div>
+                                </el-col>
+                            </el-row>
+                        </div>
+                    </el-col>
+                </el-row>
+            </el-footer>
+        </el-container>
+    </div>
+</body>
+
+</html>
